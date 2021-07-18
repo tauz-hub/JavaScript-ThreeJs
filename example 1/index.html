@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="styles.css" rel="stylesheet">
+</head>
+
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.js">
+    </script>
+    <!--- <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.5/dat.gui.min.js">
+    </script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js">
+    </script>
+
+    <script>
+        //
+        //
+        var scene = new THREE.Scene();
+
+        var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000) // setar perspectiva da camera
+        camera.position.z = 5;
+
+        var renderer = new THREE.WebGLRenderer({
+            antialias: true //setar "renderização"
+        });
+        renderer.setClearColor("#e5e5e5"); //cor de fundo
+        renderer.setSize(window.innerWidth, window.innerHeight); //redezirar width e height
+
+        document.body.appendChild(renderer.domElement);
+
+        window.addEventListener('resize', () => { //atualizar item
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+
+            camera.updateProjectionMatrix();
+        })
+
+        var raycaster = new THREE.Raycaster(); //usado para selecionar o mouse (descobrir quais objetos no espaço 3d o mouse está sobre)
+        var mouse = new THREE.Vector2(); //setar mouse como vetor
+
+        var geometry = new THREE.BoxGeometry(1, 1, 1); //criação do cubo
+        var material = new THREE.MeshLambertMaterial({
+            color: 0xF7F7F7
+        }); // cor de parte do cubo
+        //var mesh = new THREE.Mesh(geometry, material);
+
+        //scene.add(mesh);
+
+        meshX = -10; //malha
+        for (var i = 0; i < 15; i++) {
+            var mesh = new THREE.Mesh(geometry, material); //objeto na malha (mesh)
+            mesh.position.x = (Math.random() - 0.5) * 10; // posições
+            mesh.position.y = (Math.random() - 0.5) * 10;
+            mesh.position.z = (Math.random() - 0.5) * 10;
+            scene.add(mesh); // adicionando a cena
+            meshX += 1;
+        }
+
+
+        var light = new THREE.PointLight(0xFFFFFF, 1, 1000) //setando a luz
+        light.position.set(0, 0, 0); //posição da luz
+        scene.add(light); //adicionando luz a cena
+
+        var light = new THREE.PointLight(0xFFFFFF, 2, 1000) //segundo ponto de luz
+        light.position.set(0, 0, 25); //posição da segunda luz
+        scene.add(light); //adionando luz
+
+        var render = function() {
+            requestAnimationFrame(render); //"pedindo" uma animação e renderizando
+
+
+            renderer.render(scene, camera); // rederizando na camera
+        }
+
+        function onMouseMove(event) {
+            event.preventDefault();
+
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1; //calculo do mouse para saber onde está
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera); //setando camera em relação ao mouse
+
+            var intersects = raycaster.intersectObjects(scene.children, true);
+            for (var i = 0; i < intersects.length; i++) { //jogando todos os itens para a direita ao máximo
+                this.tl = new TimelineMax();
+                this.tl.to(intersects[i].object.scale, 1, {
+                    x: 2,
+                    ease: Expo.easeOut
+                })
+                this.tl.to(intersects[i].object.scale, .5, {
+                    x: .5,
+                    ease: Expo.easeOut
+                })
+                this.tl.to(intersects[i].object.position, .5, {
+                    x: 2,
+                    ease: Expo.easeOut
+                })
+                this.tl.to(intersects[i].object.rotation, .5, {
+                        y: Math.PI * .5,
+                        ease: Expo.easeOut
+                    }, "=1.5") //jogando e girando o cubo se ele estiver muito longe da direita
+            }
+        }
+
+
+
+        window.addEventListener('mousemove', onMouseMove); //usando detecção
+        render(); //renderizando a merda toda
+    </script>
+</body>
+
+</html>
