@@ -20,12 +20,12 @@
     <script>
         //
         //
-        var scene = new THREE.Scene();
+        const scene = new THREE.Scene();
 
-        var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000) // setar perspectiva da camera
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000) // setar perspectiva da camera
         camera.position.z = 5;
 
-        var renderer = new THREE.WebGLRenderer({
+        const renderer = new THREE.WebGLRenderer({
             antialias: true //setar "renderização"
         });
         renderer.setClearColor("#e5e5e5"); //cor de fundo
@@ -40,11 +40,11 @@
             camera.updateProjectionMatrix();
         })
 
-        var raycaster = new THREE.Raycaster(); //usado para selecionar o mouse (descobrir quais objetos no espaço 3d o mouse está sobre)
-        var mouse = new THREE.Vector2(); //setar mouse como vetor
+        const raycaster = new THREE.Raycaster(); //usado para selecionar o mouse (descobrir quais objetos no espaço 3d o mouse está sobre)
+        const mouse = new THREE.Vector2(); //setar mouse como vetor
 
-        var geometry = new THREE.BoxGeometry(1, 1, 1); //criação do cubo
-        var material = new THREE.MeshLambertMaterial({
+        const geometry = new THREE.BoxGeometry(1, 1, 1); //criação do cubo
+        const material = new THREE.MeshLambertMaterial({
             color: 0xF7F7F7
         }); // cor de parte do cubo
         //var mesh = new THREE.Mesh(geometry, material);
@@ -62,15 +62,15 @@
         }
 
 
-        var light = new THREE.PointLight(0xFFFFFF, 1, 1000) //setando a luz
+        let light = new THREE.PointLight(0xFFFFFF, 1, 1000) //setando a luz
         light.position.set(0, 0, 0); //posição da luz
         scene.add(light); //adicionando luz a cena
 
-        var light = new THREE.PointLight(0xFFFFFF, 2, 1000) //segundo ponto de luz
+        let light = new THREE.PointLight(0xFFFFFF, 2, 1000) //segundo ponto de luz
         light.position.set(0, 0, 25); //posição da segunda luz
         scene.add(light); //adionando luz
 
-        var render = function() {
+        let render = function() {
             requestAnimationFrame(render); //"pedindo" uma animação e renderizando
 
 
@@ -85,7 +85,7 @@
 
             raycaster.setFromCamera(mouse, camera); //setando camera em relação ao mouse
 
-            var intersects = raycaster.intersectObjects(scene.children, true);
+            let intersects = raycaster.intersectObjects(scene.children, true);
             for (var i = 0; i < intersects.length; i++) { //jogando todos os itens para a direita ao máximo
                 this.tl = new TimelineMax();
                 this.tl.to(intersects[i].object.scale, 1, {
@@ -106,8 +106,6 @@
                     }, "=1.5") //jogando e girando o cubo se ele estiver muito longe da direita
             }
         }
-
-
 
         window.addEventListener('mousemove', onMouseMove); //usando detecção
         render(); //renderizando a merda toda
